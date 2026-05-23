@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>الحجاج - المشاكل الصحية</title>
+<link href="https://fonts.googleapis.com/css2?family=Tajawal:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --green: #2d7a3a;
+    --green-light: #4caf50;
+    --green-pale: #e8f5e9;
+    --red: #c62828;
+    --red-light: #ffebee;
+    --orange: #e65100;
+    --orange-light: #fff3e0;
+    --yellow: #f9a825;
+    --bg: #f4f6f0;
+    --white: #ffffff;
+    --text: #1a2e1a;
+    --shadow: 0 4px 20px rgba(0,0,0,0.10);
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Tajawal', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  header {
+    background: linear-gradient(135deg, #1b5e20 0%, #2d7a3a 60%, #388e3c 100%);
+    color: white;
+    padding: 28px 24px 20px;
+    text-align: center;
+    box-shadow: 0 4px 16px rgba(0,0,0,0.18);
+    position: relative;
+    overflow: hidden;
+  }
+  header::before {
+    content: '';
+    position: absolute;
+    top: -40px; left: -40px;
+    width: 200px; height: 200px;
+    background: rgba(255,255,255,0.05);
+    border-radius: 50%;
+  }
+  header h1 { font-size: 1.9rem; font-weight: 900; letter-spacing: -0.5px; }
+  header p { font-size: 0.95rem; opacity: 0.85; margin-top: 6px; }
+
+  .logo-img {
+    width: 72px;
+    height: 72px;
+    border-radius: 50%;
+    object-fit: cover;
+    margin-bottom: 10px;
+    border: 3px solid rgba(255,255,255,0.5);
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+  }
+
+  .stats-bar {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    padding: 14px 24px;
+    background: white;
+    border-bottom: 2px solid #e0e0e0;
+    flex-wrap: wrap;
+  }
+  .stat {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    font-size: 0.9rem;
+    font-weight: 700;
+  }
+  .stat-dot {
+    width: 13px; height: 13px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+
+  .search-bar {
+    padding: 16px 20px;
+    background: white;
+    border-bottom: 1px solid #e0e0e0;
+  }
+  .search-bar input {
+    width: 100%;
+    padding: 10px 16px;
+    border: 1.5px solid #c8e6c9;
+    border-radius: 30px;
+    font-family: 'Tajawal', sans-serif;
+    font-size: 1rem;
+    outline: none;
+    background: var(--green-pale);
+    transition: border 0.2s;
+  }
+  .search-bar input:focus { border-color: var(--green); }
+
+  .filter-bar {
+    display: flex;
+    gap: 10px;
+    padding: 12px 20px;
+    background: white;
+    border-bottom: 1px solid #e0e0e0;
+    overflow-x: auto;
+  }
+  .filter-btn {
+    padding: 6px 16px;
+    border-radius: 20px;
+    border: 1.5px solid #ccc;
+    background: white;
+    font-family: 'Tajawal', sans-serif;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.18s;
+  }
+  .filter-btn.active { background: var(--green); color: white; border-color: var(--green); }
+  .filter-btn:hover:not(.active) { background: var(--green-pale); border-color: var(--green); }
+
+  .grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(270px, 1fr));
+    gap: 16px;
+    padding: 20px;
+  }
+
+  .card {
+    background: white;
+    border-radius: 14px;
+    box-shadow: var(--shadow);
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.18s, box-shadow 0.18s;
+    border: 2px solid transparent;
+    animation: fadeIn 0.3s ease both;
+  }
+  .card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 8px 30px rgba(0,0,0,0.14);
+    border-color: var(--green);
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .card-header {
+    padding: 14px 16px 10px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  .avatar {
+    width: 46px; height: 46px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.3rem;
+    font-weight: 900;
+    flex-shrink: 0;
+    color: white;
+  }
+  .card-name {
+    font-size: 0.97rem;
+    font-weight: 700;
+    line-height: 1.4;
+    flex: 1;
+  }
+  .card-id {
+    font-size: 0.75rem;
+    color: #888;
+    margin-top: 2px;
+  }
+
+  .card-body { padding: 12px 16px 14px; }
+
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 10px;
+    border-radius: 12px;
+    font-size: 0.78rem;
+    font-weight: 700;
+    margin: 3px 2px;
+  }
+  .badge-red { background: var(--red-light); color: var(--red); }
+  .badge-orange { background: var(--orange-light); color: var(--orange); }
+  .badge-yellow { background: #fffde7; color: #f57f17; }
+  .badge-blue { background: #e3f2fd; color: #1565c0; }
+  .badge-green { background: #e8f5e9; color: #2e7d32; }
+
+  .card-contact {
+    font-size: 0.78rem;
+    color: #666;
+    margin-top: 8px;
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  /* Modal */
+  .overlay {
+    display: none;
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.55);
+    z-index: 100;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+  }
+  .overlay.open { display: flex; }
+
+  .modal {
+    background: white;
+    border-radius: 20px;
+    max-width: 500px;
+    width: 100%;
+    max-height: 90vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    animation: popIn 0.25s cubic-bezier(.34,1.56,.64,1) both;
+  }
+  @keyframes popIn {
+    from { transform: scale(0.88); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+  }
+  .modal-header {
+    padding: 20px 22px 16px;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+  }
+  .modal-name { font-size: 1.15rem; font-weight: 900; }
+  .modal-close {
+    background: #f5f5f5;
+    border: none;
+    border-radius: 50%;
+    width: 34px; height: 34px;
+    font-size: 1.1rem;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: background 0.15s;
+  }
+  .modal-close:hover { background: #e0e0e0; }
+
+  .modal-body { padding: 18px 22px 22px; }
+
+  .info-row {
+    display: flex;
+    gap: 10px;
+    margin-bottom: 10px;
+    align-items: flex-start;
+  }
+  .info-label {
+    font-weight: 700;
+    color: #555;
+    font-size: 0.85rem;
+    min-width: 110px;
+    flex-shrink: 0;
+  }
+  .info-val {
+    font-size: 0.9rem;
+    color: var(--text);
+    font-weight: 500;
+    flex: 1;
+  }
+
+  .section-title {
+    font-size: 0.82rem;
+    font-weight: 900;
+    color: var(--green);
+    letter-spacing: 0.5px;
+    text-transform: uppercase;
+    margin: 14px 0 8px;
+    padding-bottom: 4px;
+    border-bottom: 2px solid var(--green-pale);
+  }
+
+  .alert-box {
+    padding: 12px 14px;
+    border-radius: 10px;
+    margin-bottom: 8px;
+    font-size: 0.88rem;
+    font-weight: 600;
+    line-height: 1.5;
+  }
+  .alert-red { background: var(--red-light); color: var(--red); border-right: 4px solid var(--red); }
+  .alert-orange { background: var(--orange-light); color: var(--orange); border-right: 4px solid var(--orange); }
+  .alert-yellow { background: #fffde7; color: #e65100; border-right: 4px solid var(--yellow); }
+
+  .health-status {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 14px;
+    border-radius: 20px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    margin-bottom: 14px;
+  }
+
+  .empty {
+    grid-column: 1/-1;
+    text-align: center;
+    padding: 60px 20px;
+    color: #aaa;
+    font-size: 1rem;
+  }
+
+  @media (max-width: 600px) {
+    .grid { padding: 12px; gap: 12px; }
+    header h1 { font-size: 1.4rem; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <img src="/mnt/user-data/uploads/408065.jpg" class="logo-img" alt="شعار الشركة" onerror="this.style.display='none'">
+  <h1>🏥 الحجاج ذوو المشاكل الصحية</h1>
+  <p>شركة أهالي القصيم – خدمة حجاج الداخل</p>
+</header>
+
+<div class="stats-bar" id="statsBar"></div>
+
+<div class="search-bar">
+  <input type="text" id="searchInput" placeholder="🔍 ابحث عن اسم الحاج..." oninput="filterCards()">
+</div>
+
+<div class="filter-bar" id="filterBar"></div>
+
+<div class="grid" id="grid"></div>
+
+<div class="overlay" id="overlay" onclick="closeModal(event)">
+  <div class="modal" id="modal">
+    <div class="modal-header">
+      <div>
+        <div class="modal-name" id="mName"></div>
+        <div style="font-size:0.8rem;color:#888;margin-top:3px;" id="mId"></div>
+      </div>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body" id="mBody"></div>
+  </div>
+</div>
+
+<script>
+const pilgrims = [
+  {name:"تهاني عبدالعزيز علي الوهيبي",id:"1008460717",gender:"أنثى",age:"50-59",phone:"0508102080",nusuk:"7001843791",health:"ممتازة",chronic:"لا",meds:"لا",allergy:"لا",contact:"محمد خالد النعيم",contactPhone:"0531227543",contactRel:"ابن/ابنة"},
+  {name:"أحمد عبدالعليم عبدالرازق عابدين",id:"2539153599",gender:"ذكر",age:"30-39",phone:"0534304851",nusuk:"7001843791",health:"جيدة",chronic:"لا",meds:"لا",allergy:"حساسية جيوب أنفية من الأتربة",contact:"معاذ مكاوي",contactPhone:"0534302427",contactRel:"قريب"},
+  {name:"عبدالله سعيد زايد الغامدي",id:"1054894058",gender:"ذكر",age:"30-39",phone:"0533522259",nusuk:"447010105040170",health:"ممتازة",chronic:"لا",meds:"كلسترول وميرزاجن",allergy:"لا",contact:"ناصر سعيد الغامدي",contactPhone:"0551267502",contactRel:"أخ/أخت"},
+  {name:"أحمد محمود عبدالواحد يوسف",id:"2491489999",gender:"ذكر",age:"40-49",phone:"507262324",nusuk:"7001843791",health:"جيدة",chronic:"السكري",meds:"ميتفورمين وجاردیانس",allergy:"لا",contact:"ضياء",contactPhone:"552426770",contactRel:"صديق"},
+  {name:"محمد علي محمد علي",id:"2338291558",gender:"ذكر",age:"40-49",phone:"0551921568",nusuk:"7001843791",health:"جيدة",chronic:"السكري",meds:"لا",allergy:"لا",contact:"صفاء الطيب",contactPhone:"0501459649",contactRel:"قريب"},
+  {name:"لطيفة بنت محمد بن حمد العيسى",id:"1080210428",gender:"أنثى",age:"40-49",phone:"0565636616",nusuk:"447010106369732",health:"متوسطة",chronic:"لا",meds:"رفيناك دال ورابيدوس وفلتارين + منظم سكر وحبوب ضغط",allergy:"بعض المسكنات",contact:"هيله العيسى",contactPhone:"0503111531",contactRel:"أخ/أخت"},
+  {name:"حمد محمد مطر العرنون",id:"1020622849",gender:"ذكر",age:"50-59",phone:"0504768150",nusuk:"7001843791",health:"أحتاج متابعة",chronic:"الضغط والسكري والحساسية",meds:"أدوية السكر والضغط والحساسية",allergy:"نعم",contact:"محمد حمد العرنون",contactPhone:"+966508169379",contactRel:"ابن/ابنة"},
+  {name:"بدرية عبدالله حمود البقعاوي",id:"1048853632",gender:"أنثى",age:"40-49",phone:"0552279668",nusuk:"447010105015308",health:"متوسطة",chronic:"ضعف المناعة بسبب زراعة الكلى",meds:"كرتزون - أملور - كارفيدول - مايفورتك - بروجراف",allergy:"لا",contact:"فواز فهيد البقعاوي",contactPhone:"0566559844",contactRel:"زوج"},
+  {name:"عبدالرحمن حمد عبدالعزيز الغشام",id:"1099182600",gender:"ذكر",age:"20-29",phone:"0554104316",nusuk:"7001843791",health:"جيدة",chronic:"أمراض الكلى",meds:"أدوية ضغط ومكملات",allergy:"لا",contact:"حمد الغشام",contactPhone:"0505661581",contactRel:"أب"},
+  {name:"عبير عبيد العبيد",id:"1032781286",gender:"أنثى",age:"40-49",phone:"0555250045",nusuk:"20257093475391",health:"أحتاج متابعة",chronic:"السكري",meds:"إبر الأنسولين ومنظم السكر",allergy:"لا",contact:"عبدالله وليد",contactPhone:"0547873825",contactRel:"ابن/ابنة"},
+  {name:"دوله أحمد علان جابر الشهري",id:"1068377173",gender:"أنثى",age:"40-49",phone:"0554060911",nusuk:"7001843791",health:"جيدة",chronic:"لا",meds:"حبوب الغدة الدرقية",allergy:"لا",contact:"عبدالله سالم الشهري",contactPhone:"0551232499",contactRel:"زوج"},
+  {name:"مسفر سعد محمد القحطاني",id:"1038831481",gender:"ذكر",age:"40-49",phone:"0534442155",nusuk:"447010105011461",health:"جيدة",chronic:"لا",meds:"لا",allergy:"جيوب أنفية",contact:"قريب",contactPhone:"0547449990",contactRel:"قريب"},
+  {name:"محمد أرشد عبد الرحمن",id:"2480918131",gender:"ذكر",age:"30-39",phone:"0564187393",nusuk:"7001843791",health:"متوسطة",chronic:"السكري",meds:"Insulin",allergy:"لا",contact:"محمد فواز",contactPhone:"0533785318",contactRel:"قريب"},
+  {name:"عبدالله سعود فلاح الحربي",id:"1051058723",gender:"ذكر",age:"30-39",phone:"0567900020",nusuk:"447010105045521",health:"أحتاج متابعة",chronic:"لا",meds:"الغدة 125",allergy:"لا",contact:"ساره موسى الحربي",contactPhone:"0541361815",contactRel:"زوجة"},
+  {name:"عبدالعزيز جهز العصيمي",id:"1055707895",gender:"ذكر",age:"50-59",phone:"0555582995",nusuk:"447010105369357",health:"ممتازة",chronic:"لا",meds:"هرمون للغدة الدرقية (ثايروكسن)",allergy:"لا",contact:"فوزية الثبيتي",contactPhone:"0556801661",contactRel:"زوجة"},
+  {name:"نواف عجاب دابس العتيبي",id:"1057938779",gender:"ذكر",age:"50-59",phone:"0504215104",nusuk:"447010105686852",health:"ممتازة",chronic:"ضغط الدم",meds:"أتكاند",allergy:"لا",contact:"ابن/ابنة",contactPhone:"0554522732",contactRel:"ابن/ابنة"},
+  {name:"رسمي لافي رشيد الهيري",id:"1069809935",gender:"ذكر",age:"50-59",phone:"0503026647",nusuk:"20269960677921",health:"جيدة",chronic:"السكري",meds:"Synjardy",allergy:"لا",contact:"ريم",contactPhone:"0503026647",contactRel:"أب"},
+  {name:"حسنة سالم حسن الشهري",id:"1061542047",gender:"أنثى",age:"40-49",phone:"501765248",nusuk:"447010105035085",health:"أحتاج متابعة",chronic:"أنيميا منجلية",meds:"هايدركسين ومسكنات وأدوية سيولة",allergy:"لا",contact:"محمد سالم الشهري",contactPhone:"506693329",contactRel:"أخ/أخت"},
+  {name:"امتنان حاتم محمد الزهراني",id:"1123006098",gender:"أنثى",age:"20-29",phone:"549612345",nusuk:"447010105038195",health:"جيدة",chronic:"قولون عصبي وهضمي",meds:"لا",allergy:"لا",contact:"ابتهال حاتم الزهراني",contactPhone:"8598 546 54+966",contactRel:"أخ/أخت"},
+  {name:"عثمان حسين عيسى",id:"2503864007",gender:"ذكر",age:"30-39",phone:"0548572651",nusuk:"7001843791",health:"متوسطة",chronic:"الربو",meds:"بخاخات الربو",allergy:"حساسية الربو",contact:"عبد الصبور خميس موسى",contactPhone:"0545464372",contactRel:"زميل"},
+  {name:"نورة عبدالعزيز عبدالرحمن الخريجي",id:"1083688166",gender:"أنثى",age:"30-39",phone:"0555280930",nusuk:"7001843791",health:"متوسطة",chronic:"لا",meds:"لا",allergy:"حساسية تنفسية",contact:"راشد بن عبدالرحمن بن حميد",contactPhone:"0591111877",contactRel:"زوج"},
+  {name:"مقعد موسى عبدالمحسن العتيبي",id:"1036066429",gender:"ذكر",age:"60-69",phone:"0505211454",nusuk:"447010105378304",health:"ممتازة",chronic:"السكري",meds:"منظم سكر",allergy:"لا",contact:"",contactPhone:"",contactRel:""},
+  {name:"عايد تركي العتيبي",id:"1027185394",gender:"ذكر",age:"60-69",phone:"0559454744",nusuk:"447010105016625",health:"متوسطة",chronic:"نعم (سبق عملية قصدرة)",meds:"Cardio's / Asplcard / NORACTOE / Atorva / استو انتر / توبرازول",allergy:"لا",contact:"رائد",contactPhone:"0553524655",contactRel:"ابن/ابنة"},
+  {name:"عبدالرحمن عبدالله شاهر الذبياني",id:"1010009049",gender:"ذكر",age:"60-69",phone:"0500036747",nusuk:"447010105050857",health:"ممتازة",chronic:"ضغط الدم",meds:"لو تيفان 5/160mg",allergy:"لا",contact:"فيصل عبدالرحمن الذبياني",contactPhone:"0500036703",contactRel:"ابن/ابنة"},
+  {name:"مريم سمران العتيبي",id:"1051017158",gender:"أنثى",age:"60-69",phone:"0553160288",nusuk:"4470100105016631",health:"متوسطة",chronic:"ضغط الدم",meds:"توبرازول / Tabuvan / Stover / Cardicor",allergy:"لا",contact:"رائد",contactPhone:"0553524655",contactRel:"ابن/ابنة"},
+  {name:"عبدالوهاب علي محمد القحطاني",id:"1064191693",gender:"ذكر",age:"30-39",phone:"0548455884",nusuk:"447010105062337",health:"ممتازة",chronic:"السكري",meds:"توجيو نوفو رابيد",allergy:"لا",contact:"نوره عوض القحطاني",contactPhone:"0536352529",contactRel:"قريب"},
+  {name:"خالد ضيف الله علي العدواني",id:"1025417146",gender:"ذكر",age:"50-59",phone:"0559539212",nusuk:"447010105041086",health:"ممتازة",chronic:"السكري",meds:"منظم - فيتامين B - فيتامين D - إبرة أنسولين وأخرى",allergy:"لا",contact:"عبدالعزيز خالد العدواني",contactPhone:"0553078387",contactRel:"ابن/ابنة"},
+  {name:"عبدالله مطلق منور الشمري",id:"1023507443",gender:"ذكر",age:"40-49",phone:"505109093",nusuk:"447010105372704",health:"أحتاج متابعة",chronic:"أمراض القلب",meds:"لا",allergy:"لا",contact:"نايف مطلق الشمري",contactPhone:"553430727",contactRel:"أخ/أخت"},
+  {name:"رغد صالح إبراهيم الربدي",id:"1090828433",gender:"أنثى",age:"20-29",phone:"0548255444",nusuk:"7001843791",health:"جيدة",chronic:"لا",meds:"علاج الغدة (نشاط الغدة) وفيتامينات حمل",allergy:"حساسية من نوع خضرة (الشبت)",contact:"زوج",contactPhone:"+966556132040",contactRel:"زوج"},
+  {name:"عيده حمدان آل مانع القرني",id:"1021104813",gender:"أنثى",age:"50-59",phone:"0552905530",nusuk:"20267031397070",health:"ممتازة",chronic:"أمراض القلب",meds:"كنكور - ثايروكسين",allergy:"لا",contact:"محمد عبدالله القرني",contactPhone:"0507171342",contactRel:"ابن/ابنة"},
+  {name:"عبدالله سالم حسن المجامد الشهري",id:"1061542062",gender:"ذكر",age:"40-49",phone:"0551232499",nusuk:"7001843791",health:"متوسطة",chronic:"السكري",meds:"إبر الأنسولين - علاج الضغط - حبوب السكر والكولسترول",allergy:"لا",contact:"حسن سالم الشهري",contactPhone:"0554023863",contactRel:"أخ/أخت"},
+  {name:"إسماعيل انجويا سنوندي",id:"2483001398",gender:"ذكر",age:"30-39",phone:"0501542164",nusuk:"7001843791",health:"جيدة",chronic:"لا",meds:"لا",allergy:"حكة وحمرة شديدة في العينين",contact:"زبيرو انجونا",contactPhone:"0562499256",contactRel:"قريب"},
+  {name:"بدرية حمود هليل عبيد العصيمي",id:"1043617958",gender:"أنثى",age:"40-49",phone:"0557335625",nusuk:"7001843791",health:"ممتازة",chronic:"السكري",meds:"أدوية سكر",allergy:"لا",contact:"ذياب نياف العتيبي",contactPhone:"0505118898",contactRel:"زوج"},
+  {name:"ذياب نياف عياد العتيبي",id:"1037450754",gender:"ذكر",age:"50-59",phone:"0505118898",nusuk:"447010105092687",health:"جيدة",chronic:"السكري",meds:"نعم",allergy:"لا",contact:"بدرية حمود العصيمي",contactPhone:"0557335625",contactRel:"زوجة"},
+  {name:"بلال عبيدالله سليم الحربي",id:"1084361995",gender:"ذكر",age:"30-39",phone:"0555217002",nusuk:"447010105095414",health:"متوسطة",chronic:"ألم في مفصل القدم والركبة",meds:"لا",allergy:"حساسية في الأنف",contact:"أحمد عبيدالله الحربي",contactPhone:"0507711749",contactRel:"قريب"},
+  {name:"فواد عبدالرحمن محمد الوايلي",id:"1085126892",gender:"ذكر",age:"30-39",phone:"0599677709",nusuk:"447010105014933",health:"جيدة",chronic:"حساسية جيوب أنفية مزمنة",meds:"حبوب الحساسية وبخاخات",allergy:"حساسية جيوب أنفية",contact:"لوله",contactPhone:"0566943388",contactRel:"أم"},
+  {name:"مريفة عويض عوض الجابري",id:"1031239294",gender:"أنثى",age:"60-69",phone:"0557977161",nusuk:"7001843791",health:"أحتاج متابعة",chronic:"السكري",meds:"جولين / ميتفورمين / سارتان / نورمالكس / إيفارين / أملوكارد / تريبلكس ب",allergy:"لا",contact:"عبدالمجيد الحربي",contactPhone:"0582121264",contactRel:"ابن/ابنة"},
+  {name:"شعاع وائل عماش الحربي",id:"1009870252",gender:"أنثى",age:"60-69",phone:"536565834",nusuk:"7001843791",health:"جيدة",chronic:"ضغط الدم",meds:"دواء الضغط والغدة الدرقية",allergy:"الموز والبيض",contact:"هنادي مشعل الحربي",contactPhone:"0550658715",contactRel:"ابن/ابنة"},
+  {name:"عمر سليم سليمان الحربي",id:"1088078207",gender:"ذكر",age:"30-39",phone:"502147770",nusuk:"447010105043329",health:"ممتازة",chronic:"السكري",meds:"لا",allergy:"حساسية بالجسم كامل وعطاش مستمر",contact:"عساف",contactPhone:"0501446653",contactRel:"أخ/أخت"},
+  {name:"هيلة عبدالرحمن محمد اللحيدان",id:"1033106327",gender:"أنثى",age:"60-69",phone:"0505147615",nusuk:"447010105014844",health:"متوسطة",chronic:"الربو",meds:"بخاخ كرتزون بنفسجي عند الأزمة",allergy:"حساسية صدر من الروائح النفاذة والمنظفات القوية",contact:"محمد العمر مطر",contactPhone:"580189596",contactRel:"ابن/ابنة"},
+  {name:"نوير بنيه عيد الجعيد",id:"1007701384",gender:"ذكر",age:"50-59",phone:"0598484258",nusuk:"447010105101333",health:"متوسطة",chronic:"نعم",meds:"علاج ضغط وسكري",allergy:"لا",contact:"فارس غزاي الجعيد",contactPhone:"0550091492",contactRel:"ابن/ابنة"},
+  {name:"منيرة محمد متعب العجمي",id:"1052090642",gender:"أنثى",age:"50-59",phone:"0502002201",nusuk:"447010105045468",health:"أحتاج متابعة",chronic:"ضغط الدم",meds:"Atacand 8mg / Inderal 10mg / Neomercazole 5mg",allergy:"لا",contact:"محمد ناوي العتيبي",contactPhone:"0534578804",contactRel:"ابن/ابنة"},
+  {name:"محمد وضحان الدوسري",id:"1026248565",gender:"ذكر",age:"60-69",phone:"0555104175",nusuk:"7001843791",health:"جيدة",chronic:"السكري",meds:"ديمكرون وجلوفاج 500 وحبوب الضغط والكولسترول",allergy:"لا",contact:"فهد وضحان الدوسري",contactPhone:"0538336866",contactRel:"أخ/أخت"},
+  {name:"عايشة عبدالله الحارثي",id:"1019720943",gender:"أنثى",age:"40-49",phone:"055516137544",nusuk:"447010105036557",health:"جيدة",chronic:"حساسية",meds:"منظم سكري",allergy:"لا",contact:"سعد عبدالله الحارثي",contactPhone:"0500922879",contactRel:"أخ/أخت"},
+  {name:"يوسف ذائد محمد صديق",id:"2563917398",gender:"ذكر",age:"40-49",phone:"571272734",nusuk:"20268235023372",health:"أحتاج متابعة",chronic:"كسر في عظم الرجل",meds:"كالسيوم / حبوب سيولة / مسكنات / بخاخ ربو",allergy:"أزمة",contact:"مصطفى يوسف مصطفى",contactPhone:"500938207",contactRel:"صديق"},
+  {name:"فهد عدنان عبد القيوم سفر",id:"1072173402",gender:"ذكر",age:"30-39",phone:"0544744456",nusuk:"447010105476483",health:"جيدة",chronic:"لا",meds:"لا",allergy:"من مضاد أزيثرومايسين",contact:"عهود عدنان",contactPhone:"0503480355",contactRel:"أخ/أخت"},
+  {name:"نورة خالد صالح الحربي",id:"1079735948",gender:"أنثى",age:"30-39",phone:"0546681241",nusuk:"7001843791",health:"أحتاج متابعة",chronic:"لا",meds:"PAQUIX 5mg / PHLEBODIA 600mg / MARVELON",allergy:"من الغبار",contact:"خالد صالح الحربي",contactPhone:"0505280264",contactRel:"أب"},
+  {name:"عبدالله بن عبدالله محمد المرحبي",id:"1045503933",gender:"ذكر",age:"60-69",phone:"0554150097",nusuk:"7001843791",health:"جيدة",chronic:"سكري + ضغط",meds:"ديامكرون للسكري / أملور للضغط",allergy:"لا",contact:"فاطمة عبدالله مساوى",contactPhone:"0557161589",contactRel:"زوجة"},
+  {name:"هاني علي علي عطية",id:"2486613488",gender:"ذكر",age:"40-49",phone:"595677373",nusuk:"7001843791",health:"جيدة",chronic:"قولون وجيوب أنفية",meds:"لمتابعة قصور الغدة الدرقية / بخاخ الجيوب الأنفية / علاج القولون / بخاخ الشعب الهوائية",allergy:"لا",contact:"أحمد بدوي",contactPhone:"+966502392220",contactRel:"قريب"},
+  {name:"عبدالله أحمد حسين عبدالرحيم",id:"2417891757",gender:"ذكر",age:"50-59",phone:"549497679",nusuk:"20253042425362",health:"جيدة",chronic:"الربو",meds:"فورسيجا 10mg / ميتفورمين 500mg",allergy:"حساسية صدر",contact:"قريب",contactPhone:"548526440",contactRel:"قريب"},
+  {name:"عبدالرحمن مستور قنيع المسعودي",id:"1010096319",gender:"ذكر",age:"40-49",phone:"0544550122",nusuk:"447010105051805",health:"جيدة",chronic:"السكري",meds:"Micardis Plus / Xigduo XR",allergy:"لا",contact:"عبدالعزيز المسعودي",contactPhone:"+9665433471000",contactRel:"أخ/أخت"},
+  {name:"عزيز أحمد أميري",id:"2535659334",gender:"ذكر",age:"30-39",phone:"0535392858",nusuk:"447020105067060",health:"ممتازة",chronic:"الربو",meds:"بخاخ الربو",allergy:"حساسية من الأسماك",contact:"أيوب",contactPhone:"0576079622",contactRel:"ابن/ابنة"},
+  {name:"صلاح إبراهيم محمد العزب",id:"2433639479",gender:"ذكر",age:"40-49",phone:"0550953461",nusuk:"447020105009846",health:"جيدة",chronic:"لا",meds:"لا",allergy:"حساسية جيوب أنفية من الأتربة والروائح والمكيف",contact:"حسن السيد عبداللطيف",contactPhone:"0504206732",contactRel:"عم الزوجة"},
+  {name:"محمد عبدالله ناصر الحسين",id:"1094143755",gender:"ذكر",age:"30-39",phone:"0544988128",nusuk:"447010105023415",health:"جيدة",chronic:"لا",meds:"لا",allergy:"من الطيور وروائحها",contact:"صالح الحسين",contactPhone:"0554000081",contactRel:"أخ/أخت"},
+  {name:"جمعة أحمد الزهراني",id:"1035197514",gender:"أنثى",age:"40-49",phone:"0535229004",nusuk:"4470101050458",health:"جيدة",chronic:"لا",meds:"حبوب نقص الحديد",allergy:"لا",contact:"خالد سعد العمري",contactPhone:"0556656652",contactRel:"ابن/ابنة"},
+  {name:"عالية صاهود نور المطيري",id:"1037455258",gender:"أنثى",age:"50-59",phone:"0569731773",nusuk:"447010105013890",health:"جيدة",chronic:"لا",meds:"لا",allergy:"حساسية من الربيان",contact:"عبدالله",contactPhone:"0531055881",contactRel:"زوج"},
+  {name:"فريدة عمر سالم باعيسى",id:"1097550261",gender:"أنثى",age:"50-59",phone:"0500019149",nusuk:"447010106226522",health:"متوسطة",chronic:"فقر الدم",meds:"دوروفين - ريلاكسون - Coxicam - فولتارين",allergy:"لا",contact:"تارا الشريف",contactPhone:"0536589093",contactRel:"ابن/ابنة"},
+  {name:"ريم صلاح مضحي الحربي",id:"1063605560",gender:"أنثى",age:"30-39",phone:"0501187717",nusuk:"447010105056427",health:"جيدة",chronic:"لا",meds:"لا",allergy:"حساسية من البقوليات والسمك وبعض الفواكه (كرز/موز/تفاح/تمر)",contact:"مشعل عوض غانم الحربي",contactPhone:"0503553433",contactRel:"زوج"},
+  {name:"سعدة بنت مطيع بن عطية الله الحربي",id:"1032856757",gender:"أنثى",age:"60-69",phone:"0556553475",nusuk:"20256407294769",health:"أحتاج متابعة",chronic:"السكري",meds:"Solifenacin 10mg / Mirabegron 50mg / Gliclazide 30mg / Linagliptin 5mg",allergy:"لا",contact:"أحمد عبيدالله الحربي",contactPhone:"0500771749",contactRel:"ابن/ابنة"},
+  {name:"نوره فهد عبدالله الطلیحي",id:"1025260298",gender:"أنثى",age:"50-59",phone:"0504472669",nusuk:"7001843791",health:"أحتاج متابعة",chronic:"ضغط الدم",meds:"لا",allergy:"إكزيما",contact:"مشاري عبدالله الطلیحي",contactPhone:"0504458396",contactRel:"ابن/ابنة"},
+  {name:"مزنة عبدالعزيز مقرن القصير",id:"1050410305",gender:"أنثى",age:"60-69",phone:"0503984808",nusuk:"7001843971",health:"متوسطة",chronic:"السكر والضغط",meds:"Osteocare / أملور / ميتفورمين / سيتاجليبتين (جانيوميت)",allergy:"لا",contact:"عبدالمجيد القصير",contactPhone:"0553058997",contactRel:"ابن/ابنة"},
+  {name:"سلمى راشد سعد المالكي",id:"1039860927",gender:"أنثى",age:"40-49",phone:"0565508835",nusuk:"447010105014385",health:"جيدة",chronic:"الربو",meds:"بروفين وهيستوب / بخاخ",allergy:"أدوية بروفين وهيستوب",contact:"زوج",contactPhone:"0566662363",contactRel:"زوج"},
+  {name:"دلال عبدالله عبدالكريم البصري",id:"1054133838",gender:"أنثى",age:"30-39",phone:"0554437261",nusuk:"7001843791",health:"متوسطة",chronic:"الربو",meds:"بخاخ الأنف",allergy:"حساسية صدر وأنف",contact:"عبدالرحمن الناصر",contactPhone:"0555443461",contactRel:"زوج"},
+  {name:"الجوهرة عبدالرحمن عبدالله العودة",id:"1009437086",gender:"أنثى",age:"60-69",phone:"0505261417",nusuk:"7001843791",health:"جيدة",chronic:"ضغط الدم",meds:"أدوية ضغط الدم + أدوية كولسترول",allergy:"حساسية من البيثيدين والبنسلين",contact:"بشرى إبراهيم الصويلحي",contactPhone:"0508441038",contactRel:"ابن/ابنة"},
+  {name:"عواطف علي إبراهيم الزامل",id:"1051199519",gender:"أنثى",age:"50-59",phone:"0505268110",nusuk:"47010105092579",health:"متوسطة",chronic:"لا",meds:"لا",allergy:"ربو",contact:"حمد عبدالله العليان",contactPhone:"0503911332",contactRel:"ابن/ابنة"},
+  {name:"يحيى سلمان جبر الفيفي",id:"1037100581",gender:"ذكر",age:"60-69",phone:"0502898721",nusuk:"7001843791",health:"جيدة",chronic:"الربو",meds:"لا",allergy:"لا",contact:"اشواق يحيى",contactPhone:"0581877481",contactRel:"ابن/ابنة"},
+  {name:"غزاي طلق عيد الجعيد",id:"1042898088",gender:"ذكر",age:"60-69",phone:"0555620304",nusuk:"447010105101351",health:"متوسطة",chronic:"ضغط الدم",meds:"حبة ضغط وحبة منظم",allergy:"لا",contact:"فارس غزاي الجعيد",contactPhone:"550091492",contactRel:"ابن/ابنة"},
+  {name:"عافية سالم جبر حسن",id:"1037100599",gender:"أنثى",age:"50-59",phone:"0502899067",nusuk:"7001843791",health:"جيدة",chronic:"الربو",meds:"لا",allergy:"لا",contact:"هدى يحيى",contactPhone:"0535238118",contactRel:"ابن/ابنة"},
+  {name:"محمد سعود عبدالرحمن العبود",id:"1065619387",gender:"ذكر",age:"30-39",phone:"0582122126",nusuk:"7001843791",health:"ممتازة",chronic:"الربو",meds:"سيمبيكورت تربوهيلر",allergy:"البخور والعطور والدخان والغبار",contact:"مشاعل الشايع",contactPhone:"0564714620",contactRel:"زوجة"},
+  {name:"أمير عثمان محمد صالح محمد",id:"2340523196",gender:"ذكر",age:"40-49",phone:"0535000638",nusuk:"447020105107284",health:"ممتازة",chronic:"الربو",meds:"لا",allergy:"تنفس / الغبار",contact:"مروه علي صالح",contactPhone:"+966592678157",contactRel:"زوجة"},
+  {name:"ظهير الإسلام موال",id:"2173869492",gender:"ذكر",age:"50-59",phone:"0570888151",nusuk:"447020105055974",health:"متوسطة",chronic:"لا",meds:"لا",allergy:"لا",contact:"شيخ فريد",contactPhone:"0501043416",contactRel:"قريب"},
+  {name:"فاطمة عبدالله أرزق مساوى",id:"1088206824",gender:"أنثى",age:"60-69",phone:"0557161589",nusuk:"7001843791",health:"ممتازة",chronic:"السكري والضغط",meds:"علاج الضغط والسكر",allergy:"لا",contact:"عبدالله المرحبي",contactPhone:"0554150097",contactRel:"زوج"},
+  {name:"سهيل محمد عثمان الشومر",id:"1002760757",gender:"ذكر",age:"40-49",phone:"0540283339",nusuk:"44701010503441",health:"متوسطة",chronic:"السكري",meds:"Metformin 500 / Glucare / Empagliflozin",allergy:"لا",contact:"هنا مبارك الحودي",contactPhone:"0540273339",contactRel:"زوجة"},
+  {name:"وفاء صبحي عيسى جبريل",id:"1051425666",gender:"أنثى",age:"60-69",phone:"00966502737324",nusuk:"7001843791",health:"ممتازة",chronic:"ضغط الدم",meds:"Exforge 10/160/12.5 HCT / No-uric 100mg",allergy:"لا",contact:"فيصل محمد عزت العلاوي",contactPhone:"00966531857630",contactRel:"ابن/ابنة"},
+  {name:"عيدة شليل حمود العتيبي",id:"1131680819",gender:"أنثى",age:"40-49",phone:"0509169159",nusuk:"7001843791",health:"جيدة",chronic:"السكري",meds:"علاج الضغط والسكر",allergy:"لا",contact:"محمد ناصر مشاري الشيباني",contactPhone:"0500968674",contactRel:"ابن/ابنة"},
+  {name:"حضية علي محمد الهلالي",id:"1030340796",gender:"أنثى",age:"40-49",phone:"0557092456",nusuk:"447010105045088",health:"جيدة",chronic:"لا",meds:"لا",allergy:"حساسية أنف وعيون",contact:"راشد علي محمد الهلالي",contactPhone:"0546455588",contactRel:"أخ/أخت"},
+  {name:"فارس خالد الحملي",id:"2140698685",gender:"ذكر",age:"20-29",phone:"0506107374",nusuk:"7001843791",health:"متوسطة",chronic:"الأنيميا المنجلية",meds:"هيدروكسيل يوريا وحمض الفوليك",allergy:"لا",contact:"جهاد يوسف صهيب",contactPhone:"0555632141",contactRel:"قريب"},
+  {name:"MOHD AFSAR MOHD ABBAS",id:"2418398422",gender:"ذكر",age:"30-39",phone:"0503652007",nusuk:"447020105029084",health:"جيدة",chronic:"لا",meds:"Foster Nexthaler Inhaler",allergy:"لا",contact:"MOHAMMAD SAMAD",contactPhone:"0553417500",contactRel:"صديق"},
+  {name:"Shakil Rahiman Jamadar",id:"2065029353",gender:"ذكر",age:"60-69",phone:"0503838878",nusuk:"7001843791",health:"جيدة",chronic:"لا",meds:"For blood pressure and thyroid",allergy:"لا",contact:"FARHAN BAIG",contactPhone:"0503419526",contactRel:"قريب"},
+  {name:"حكمة عايض سعيد المسعودي",id:"1014303729",gender:"أنثى",age:"40-49",phone:"0544550133",nusuk:"447010105051801",health:"متوسطة",chronic:"لا",meds:"لا",allergy:"لا",contact:"عبدالرحمن المسعودي",contactPhone:"0544550122",contactRel:"زوج"},
+  {name:"هند قاعد منير المطيري",id:"1045163969",gender:"أنثى",age:"40-49",phone:"0552577343",nusuk:"44701015039952",health:"متوسطة",chronic:"لا",meds:"نعم",allergy:"لا",contact:"فيصل عبدالله سعيد المطيري",contactPhone:"0538526015",contactRel:"ابن/ابنة"},
+  {name:"البندري مقرن علي القصير",id:"1121562308",gender:"أنثى",age:"20-29",phone:"966555142836",nusuk:"7001843791",health:"ممتازة",chronic:"حساسية أو التهاب جيوب أنفية",meds:"لا",allergy:"التهاب أنف تحسسي",contact:"عبدالمجيد مقرن القصير",contactPhone:"966553058997",contactRel:"أخ/أخت"},
+  {name:"خزنة سليم الحربي",id:"1088876592",gender:"أنثى",age:"30-39",phone:"0532211012",nusuk:"7001843791",health:"جيدة",chronic:"لا",meds:"لا",allergy:"لا",contact:"عمر سليم الحربي",contactPhone:"0502147770",contactRel:"أخ/أخت"},
+  {name:"إبتهال حاتم محمد الزهراني",id:"1103979306",gender:"أنثى",age:"20-29",phone:"0545468598",nusuk:"447010105038203",health:"متوسطة",chronic:"قولون هضمي وكتمة",meds:"لا",allergy:"لا",contact:"امتنان حاتم الزهراني",contactPhone:"0549612345",contactRel:"أخ/أخت"},
+  {name:"هاجر الأسمري",id:"1078958475",gender:"أنثى",age:"40-49",phone:"0566594946",nusuk:"7001843791",health:"جيدة",chronic:"نعم",meds:"لا",allergy:"لا",contact:"حفصة الأسمري",contactPhone:"0547478700",contactRel:"أخ/أخت"},
+  {name:"عاطف بشير منصور العنزي",id:"1080118183",gender:"ذكر",age:"30-39",phone:"0560477977",nusuk:"447010105006910",health:"ممتازة",chronic:"ما قبل السكري",meds:"نعم",allergy:"لا",contact:"أحمد العنزي",contactPhone:"0546058171",contactRel:"أخ/أخت"},
+  {name:"حسن يحيى حسن محمد",id:"2574227373",gender:"ذكر",age:"30-39",phone:"0540789680",nusuk:"447020105020922",health:"ممتازة",chronic:"صداع نصفي (الشقيقة)",meds:"لا",allergy:"لا",contact:"علاء الدين يحيى حسن محمد",contactPhone:"0599771576",contactRel:"أخ/أخت"},
+  {name:"مريم حسن حسين مجرشي",id:"1076030939",gender:"أنثى",age:"30-39",phone:"504398264",nusuk:"447010105010994",health:"جيدة",chronic:"آلام المفاصل (صدفية المفاصل) / دسك في الظهر / حساسية صدر وجيوب أنفية / متابعة أمراض القلب",meds:"لا",allergy:"حساسية صدر وجيوب أنفية / حساسية جلدية (صدفية / أكزيما / ارتكاريا)",contact:"قريب",contactPhone:"507499881",contactRel:"أخ/أخت"},
+  {name:"محمد أمير عبدالرزاق عابدين",id:"2539153599",gender:"ذكر",age:"30-39",phone:"0534304851",nusuk:"7001843791",health:"جيدة",chronic:"لا",meds:"لا",allergy:"حساسية جيوب أنفية من الأتربة",contact:"معاذ مكاوي",contactPhone:"0534302427",contactRel:"قريب"},
+  {name:"زبيرو انجويا",id:"2483000663",gender:"ذكر",age:"30-39",phone:"0562499256",nusuk:"447020105070863",health:"جيدة",chronic:"لا",meds:"لا",allergy:"صعوبة تنفس عند الشدة الحرارية أو الأتربة",contact:"إسماعيل انجويا",contactPhone:"+9665021541642",contactRel:"أخ/أخت"},
+  {name:"نوره حمد عبدالله العيوني",id:"1112158595",gender:"أنثى",age:"20-29",phone:"0554219585",nusuk:"447010105011887",health:"ممتازة",chronic:"حساسية",meds:"لا",allergy:"حساسية القمح",contact:"البراء",contactPhone:"0570310671",contactRel:"أخ/أخت"},
+  {name:"فهد عبدالعزيز محمد الحربي",id:"1068109550",gender:"ذكر",age:"30-39",phone:"0531222299",nusuk:"447010105063906",health:"متوسطة",chronic:"انزلاق غضروفي بالظهر",meds:"لا",allergy:"لا",contact:"ريم مرزوق الحربي",contactPhone:"0554099808",contactRel:"زوجة"},
+  {name:"مهره علي عبود الحارثي",id:"1092877719",gender:"أنثى",age:"30-39",phone:"0567494085",nusuk:"447010105040354",health:"متوسطة",chronic:"لا",meds:"لا",allergy:"ارتكاريا",contact:"فراس عصام نافع الرفاعي",contactPhone:"0531679890",contactRel:"زوج"},
+];
+
+function getSeverity(p) {
+  const h = p.health;
+  const hasChronic = p.chronic && p.chronic !== "لا" && p.chronic !== "لا يوجد";
+  const hasAllergy = p.allergy && p.allergy !== "لا" && p.allergy !== "لا يوجد";
+  if (h === "أحتاج متابعة") return "high";
+  if (hasChronic || h === "متوسطة") return "medium";
+  if (hasAllergy) return "low";
+  return "low";
+}
+
+function getSeverityColor(s) {
+  if (s === "high") return "#c62828";
+  if (s === "medium") return "#e65100";
+  return "#1565c0";
+}
+
+function getSeverityLabel(s) {
+  if (s === "high") return "يحتاج متابعة";
+  if (s === "medium") return "متوسط";
+  return "تنبيه";
+}
+
+function getIssues(p) {
+  let issues = [];
+  if (p.chronic && p.chronic !== "لا" && p.chronic !== "لا يوجد") issues.push({type:"chronic", label: p.chronic});
+  if (p.allergy && p.allergy !== "لا" && p.allergy !== "لا يوجد") issues.push({type:"allergy", label: p.allergy});
+  if (p.meds && p.meds !== "لا" && p.meds !== "لا يوجد" && p.meds !== "نعم") issues.push({type:"meds", label: p.meds});
+  return issues;
+}
+
+let currentFilter = "all";
+let searchTerm = "";
+
+function renderStats() {
+  const high = pilgrims.filter(p=>getSeverity(p)==="high").length;
+  const med = pilgrims.filter(p=>getSeverity(p)==="medium").length;
+  const low = pilgrims.filter(p=>getSeverity(p)==="low").length;
+  document.getElementById("statsBar").innerHTML = `
+    <div class="stat"><span class="stat-dot" style="background:#c62828"></span> يحتاج متابعة: <strong>${high}</strong></div>
+    <div class="stat"><span class="stat-dot" style="background:#e65100"></span> متوسط: <strong>${med}</strong></div>
+    <div class="stat"><span class="stat-dot" style="background:#1565c0"></span> تنبيه بسيط: <strong>${low}</strong></div>
+    <div class="stat"><span class="stat-dot" style="background:#388e3c"></span> الإجمالي: <strong>${pilgrims.length}</strong></div>
+  `;
+}
+
+function renderFilters() {
+  const filters = [
+    {id:"all", label:"الكل"},
+    {id:"high", label:"🔴 يحتاج متابعة"},
+    {id:"medium", label:"🟠 متوسط"},
+    {id:"low", label:"🔵 تنبيه"},
+    {id:"chronic_diabetes", label:"🩸 السكري"},
+    {id:"chronic_pressure", label:"💊 الضغط"},
+    {id:"chronic_asthma", label:"🫁 الربو"},
+    {id:"allergy", label:"🤧 حساسية"},
+    {id:"heart", label:"❤️ قلب"},
+  ];
+  document.getElementById("filterBar").innerHTML = filters.map(f =>
+    `<button class="filter-btn${currentFilter===f.id?' active':''}" onclick="setFilter('${f.id}')">${f.label}</button>`
+  ).join('');
+}
+
+function setFilter(f) {
+  currentFilter = f;
+  renderFilters();
+  renderCards();
+}
+
+function filterCards() {
+  searchTerm = document.getElementById("searchInput").value.toLowerCase();
+  renderCards();
+}
+
+function matchesFilter(p) {
+  const sv = getSeverity(p);
+  const issues = getIssues(p);
+  const allText = (p.name + p.chronic + p.allergy + p.meds + p.health).toLowerCase();
+  if (!allText.includes(searchTerm)) return false;
+  if (currentFilter === "all") return true;
+  if (currentFilter === "high") return sv === "high";
+  if (currentFilter === "medium") return sv === "medium";
+  if (currentFilter === "low") return sv === "low";
+  if (currentFilter === "chronic_diabetes") return allText.includes("سكر") || allText.includes("سكري") || allText.includes("أنسولين") || allText.includes("انسولين");
+  if (currentFilter === "chronic_pressure") return allText.includes("ضغط");
+  if (currentFilter === "chronic_asthma") return allText.includes("ربو");
+  if (currentFilter === "allergy") return p.allergy && p.allergy !== "لا" && p.allergy !== "لا يوجد";
+  if (currentFilter === "heart") return allText.includes("قلب");
+  return true;
+}
+
+function renderCards() {
+  const grid = document.getElementById("grid");
+  const filtered = pilgrims.filter(matchesFilter);
+
+  if (!filtered.length) {
+    grid.innerHTML = '<div class="empty">لا توجد نتائج مطابقة</div>';
+    return;
+  }
+
+  const sorted = [...filtered].sort((a,b) => {
+    const order = {high:0, medium:1, low:2};
+    return order[getSeverity(a)] - order[getSeverity(b)];
+  });
+
+  grid.innerHTML = sorted.map((p, i) => {
+    const sv = getSeverity(p);
+    const color = getSeverityColor(sv);
+    const issues = getIssues(p);
+    const initials = p.name.split(' ').slice(0,2).map(x=>x[0]).join('');
+
+    const badges = issues.slice(0, 3).map(iss => {
+      if (iss.type === "chronic") return `<span class="badge badge-red">🏥 ${iss.label.length>18?iss.label.slice(0,18)+'…':iss.label}</span>`;
+      if (iss.type === "allergy") return `<span class="badge badge-orange">🤧 ${iss.label.length>18?iss.label.slice(0,18)+'…':iss.label}</span>`;
+      if (iss.type === "meds") return `<span class="badge badge-blue">💊 أدوية</span>`;
+    }).join('');
+
+    return `
+      <div class="card" style="animation-delay:${i*0.03}s" onclick="openModal(${pilgrims.indexOf(p)})">
+        <div class="card-header">
+          <div class="avatar" style="background:${color}">${initials}</div>
+          <div>
+            <div class="card-name">${p.name}</div>
+            <div class="card-id">${p.gender} | ${p.age}</div>
+          </div>
+        </div>
+        <div class="card-body">
+          ${badges || '<span class="badge badge-yellow">⚠️ تنبيه صحي</span>'}
+          ${p.contact ? `<div class="card-contact">📞 ${p.contact}: ${p.contactPhone}</div>` : ''}
+        </div>
+      </div>
+    `;
+  }).join('');
+}
+
+function openModal(idx) {
+  const p = pilgrims[idx];
+  const sv = getSeverity(p);
+  const color = getSeverityColor(sv);
+  const issues = getIssues(p);
+
+  document.getElementById("mName").textContent = p.name;
+  document.getElementById("mId").textContent = `رقم الهوية: ${p.id} | رقم بطاقة نسك: ${p.nusuk}`;
+
+  let body = `
+    <div class="health-status" style="background:${color}22;color:${color}">
+      ● الحالة الصحية: ${p.health}
+    </div>
+    <div class="info-row">
+      <div class="info-label">الجنس / العمر</div>
+      <div class="info-val">${p.gender} | ${p.age}</div>
+    </div>
+    <div class="info-row">
+      <div class="info-label">رقم الجوال</div>
+      <div class="info-val" dir="ltr">${p.phone}</div>
+    </div>
+  `;
+
+  if (p.chronic && p.chronic !== "لا" && p.chronic !== "لا يوجد") {
+    body += `
+      <div class="section-title">🏥 الأمراض المزمنة</div>
+      <div class="alert-box alert-red">${p.chronic}</div>
+    `;
+  }
+
+  if (p.allergy && p.allergy !== "لا" && p.allergy !== "لا يوجد") {
+    body += `
+      <div class="section-title">🤧 الحساسية</div>
+      <div class="alert-box alert-orange">${p.allergy}</div>
+    `;
+  }
+
+  if (p.meds && p.meds !== "لا" && p.meds !== "لا يوجد" && p.meds !== "نعم") {
+    body += `
+      <div class="section-title">💊 الأدوية اليومية</div>
+      <div class="alert-box alert-yellow">${p.meds}</div>
+    `;
+  }
+
+  if (p.contact) {
+    body += `
+      <div class="section-title">📞 جهة التواصل في الطوارئ</div>
+      <div class="info-row"><div class="info-label">الاسم</div><div class="info-val">${p.contact}</div></div>
+      <div class="info-row"><div class="info-label">الصلة</div><div class="info-val">${p.contactRel}</div></div>
+      <div class="info-row"><div class="info-label">الجوال</div><div class="info-val" dir="ltr">${p.contactPhone}</div></div>
+    `;
+  }
+
+  document.getElementById("mBody").innerHTML = body;
+  document.getElementById("overlay").classList.add("open");
+}
+
+function closeModal(e) {
+  if (!e || e.target === document.getElementById("overlay")) {
+    document.getElementById("overlay").classList.remove("open");
+  }
+}
+
+document.addEventListener("keydown", e => { if (e.key === "Escape") closeModal(); });
+
+renderStats();
+renderFilters();
+renderCards();
+</script>
+</body>
+</html>
